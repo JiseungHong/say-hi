@@ -54,8 +54,6 @@ function verifySignature(req, webhookSecret) {
   const digest = "sha256=" + hmac
       .update(JSON.stringify(req.body))
       .digest("hex");
-  console.log("GITHUB_PRIVATE_KEY:", process.env.GITHUB_PRIVATE_KEY || "Not set or empty");
-  console.log("WEBHOOK_SECRET:", process.env.WEBHOOK_SECRET);
 
   if (crypto.timingSafeEqual(
       Buffer.from(signature),
@@ -81,11 +79,27 @@ async function getJWT(githubAppId, privateKey) {
     exp: now + 60 * 10,
     iss: githubAppId,
   };
+
+  // Ensure the private key is in PEM format
+  let pemKey = privateKey.trim();
+  if (!pemKey.startsWith("-----BEGIN RSA PRIVATE KEY-----")) {
+    pemKey = `-----BEGIN RSA PRIVATE KEY-----\n${pemKey}\n-----END RSA PRIVATE KEY-----`;
+  }
+  // Replace any '\n' string literals with actual newlines
+  pemKey = pemKey.replace(/\\n/g, "\n");
+
+  console.log("Private Key (first 100 chars):", pemKey.substring(0, 100));
+
   return require("jsonwebtoken").sign(
       payload,
-      privateKey,
+      pemKey,
       {algorithm: "RS256"},
   );
+  // return require("jsonwebtoken").sign(
+  //     payload,
+  //     privateKey,
+  //     {algorithm: "RS256"},
+  // );
 }
 
 /**
