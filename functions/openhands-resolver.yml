@@ -1,7 +1,7 @@
 name: Auto-Fix Tagged Issues with OpenHands
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       issue_number:
         required: true
@@ -32,7 +32,6 @@ permissions:
 
 jobs:
   auto-fix:
-    if: github.event_name == 'workflow_call'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

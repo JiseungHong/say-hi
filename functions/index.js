@@ -181,7 +181,8 @@ async function injectWorkflowFile(owner, repo, installationId, githubAppId, priv
   // Create a new tree
   const {data: newTreeData} = await axios.post(`https://api.github.com/repos/${owner}/${repo}/git/trees`, {
     base_tree: treeSha,
-    tree: [{path: ".github/workflows/openhands-resolver.yml", mode: "100644", type: "blob", sha: blobData.sha}],
+    // tree: [{path: ".github/workflows/openhands-resolver.yml", mode: "100644", type: "blob", sha: blobData.sha}],
+    tree: [{path: ".github/workflows/test-workflow.yml", mode: "100644", type: "blob", sha: blobData.sha}],
   }, {headers: {Authorization: `Bearer ${token}`}});
 
   // Create a new commit
@@ -200,7 +201,7 @@ async function injectWorkflowFile(owner, repo, installationId, githubAppId, priv
 }
 
 // Expexted hash for: test-workflow.yml
-const EXPECTED_WORKFLOW_HASH = "7b7691d8e4e10a38a59a0714cde8c84c04feadbeec4af994d3b65e731bf6b059";
+const EXPECTED_WORKFLOW_HASH = "54a3a71cf1ee16eb7d5b91c752e1e792a86129e7df0efde07853c0e4aada11b6";
 
 /**
  * Fetches the workflow file from the user's repository.
@@ -278,7 +279,7 @@ async function triggerWorkflow(owner, repo, issueNumber, installationId, githubA
   // Retrieve necessary secrets from Firebase Secret Manager
   const llmModels = await getSecret("LLM_MODELS");
   const llmApiKey = await getSecret("LLM_API_KEY");
-  const firebaseConfig = await getSecret("FIREBASE_CONFIG_");
+  const firebaseConfig = await getSecret("FIRE_CONFIG");
   const baseUrl = await getSecret("BASE_URL");
 
   // Define workflow inputs, dynamically setting PAT credentials
